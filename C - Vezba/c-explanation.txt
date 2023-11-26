@@ -1,0 +1,334 @@
+types in c
+
+char (1 byte; -128 to 127 or 0 to 255), %c
+unsigned char (1 byte; 0 to 255) -> samo pozitivne vrednosti %c
+signed char (1 byte; -128 to 127) -> 
+
+int (2 or 4 bytes (zavisi od kompajlera), -(2^16) bits to (2^16) bits or -(2^32) to (2^32) bits), %d
+unsigned int (2 or 4 bytes (0 to (2^16) or (2^32)) -> samo pozitivni integeri, %d
+
+short (2 bytes; -(2^16) to (2^16)), %hu 
+unsigned short (2 bytes; 0 to (2^16) -> samo pozitivni integereri, %hu
+
+long (8 bytes (ili 4 byte ako je 32 bitni OS); -(2^63) to (2^63), %l
+unsigned long (0 to (2^64), %l
+
+float (4 bytes; 1.2E-38 to 3.4E+38; 6 decimal places)
+double (8 bytes; 2.3E-308 to 1.7E+308; 15 decimal places)
+long double (10 bytes; 3.4E-4932 to 1.1E+4932; 19 decimal places)
+
+%g -> drugaciji format prikaza realne vrednosti
+
+void Tipovi :
+	1) void exit (int status) -> ne vraca nikakvu vrednost a prihvta argument int
+	2) int rand (void) -> funkcija vraca int a ne prihvata vrednost
+	3) void *malloc (size_t size) -> vraca pokazivac na void koje moze da se kastuje na bilo koji tip podataka
+
+Ne moze da se definise : unisgned double, unsigned float
+
+sizeof -> vraca broj bitova
+
+
+extern int myVariable; (moze da se napise bez dodeljivanja vrednosti; ovo extern kaze mom kompajleru da ta variabla ima definisanu vrednost negde
+drugo u kodu)
+
+Lvalue (left value) and Rvalue (Right value) y (left value) = x + 3 (right value)
+
+const int pi = 3.14 (konstante se koriste za definisanje variable cija vrednost ne bi smela da se promeni u kodu)
+bool ne postoji u c-u
+
+local vs global variable : 
+	-> lokalne variable su definisane u bloku funkcije i one postoje samo unutar te funkcije na steku; kada se zavrsi funkcija variabla nestaje		
+	-> globalne variable su definisane van bloka funkcije i postoje tokom celog programa
+
+Stek je region u memoriji koji se koristi za egzekuciju funkcija. Svaka funkcija poziva prostor koji je alociran u steak frejmu koji ukljucuje prostor
+za lokalne variable, parametre i druge informacije; Stek koristi LIFO princip (Lst In First Out) strukture podataka i svaki poziv funkcije pravi novi stek frejm
+Lokalne variable imaju automatsku trajanje u memoriji odnosno njihova memorija se automatski alocira i dealociri kada se funkcija zavrsi; isto 
+se memorija lokalnih varijabli brise kako bi se resursi oslobodili za poziv neke druge funkcije
+
+Heap je drgi tip memorije zaduzen za dinamicku alokaciju memorijie (malloc). Po defaultu lokalne memorije nisu alocirane na heapu. Ako je neophodno 
+koriscenje dinamicke memorije onda se koriste pokazivaci; Stek moze brze da alocira vrednosti memoriju od heapa, ali ima limitiranu velicinu i velicina
+steak-a se odredjuje zavisno od setup-a projekta.
+
+Heap overflow -> ako pokusamo da alociramo vise memorije nego sto postoji na heap-u.
+Memory leaks -> ako se alocira memorija ali se nikada ne obrise (free)
+Performance degradation -> ako se alocira memorija i dealocira
+Undifined behavior -> ako pokusate da pristupite memoriji koja nije alocirana ispravno
+
+Globalne variable se storuju u memoriji koja nije ni heap ni stek nego poznata kao data segment ili global/static memoriji. Ako prilikom delkaracije nemaju
+extern one su tipicno storovane u data sagmentu programa memorije. Data segment je podeljen u dve praticije (inicijalizacija data segmenta -> za variable sa inicijalnim vrednostima)
+i neinicijalizovane data segment (za varijable bez inicijalne vrednosti). Globalne vraijable postoje tokom celog programa.
+Ako se koristi static int staticGlobalVar = 10; (kada se koristi static to znaci da je varijabla vidiljniva samo u fajlu u kome je definisana)
+
+
+Static variable : 
+
+Static se koristi i za lokalne i globalne variable. 
+Static local variabla -> promeni se duzina trajanja varijable. Bez obzria sto je definisana unutar neke funkcije variabla je alocirana tokom celog programa, ali je vidljiva samo 
+u funkciji u kojoj je definisana. Inicijalizovana je samo prvi put kada se funkcija pozove.
+
+Globalne varijable -> vidi se samo unutar fajla unutar koga je definisana.
+
+
+Razlike izmedju break and contue 
+Break -> omogucava da se prekine izvrsavanje petlje
+Continue -> omogucava da se odmah predje na nerednu iteraciju
+
+register int miles -> register je hint kompajleru da se variabla storuje u regustru procesora a ne u RAM-u radi brzeg pristupa; ali compailer moze zanimariti 
+
+
+Operatori 
+
+ceil - zaokruzivanje na veci; floor -> zaokruzivanje na manji broj
+
+Aritmeticki (+;-;*;/;%;++;--), Relacioni(==; !=; >; <; >=; <=;), Logicki (&&, ||, !), Bitwise (&, |, ^, ~, <<; >>), Assignment (=, +=, -=, *=, /=, %=, <<=, &=, ^=, !=)
+Bitwise poredi svaki bit posebno, a AND (&&) poredi dve vrednosti)
+& -> vraca adresu variable
+* -> pointer variable
+
+Postfix and Prefix
+
+int a = 5;
+int b = a++ * 2 = (5*2 = 10; ali u sledecoj iteraciji ce a biti 6 * 2)
+int b = ++a * 2 = (6*2 = 12; u sledecoj iteraciji ce biti 7 * 2)
+
+
+While and do-while : 
+Obe petlje ce se izvsavati dok je ispunjen uslov; Kod while petlje se prvo proveri uslov pa udje u petlju, a kod do while se prvi put udje u petlju bez provere uslova;
+
+
+volatile in c :
+rec volatile se koristi za varijablu kako bi rekli kompajleru da se ta varijabla moze promeniti od strane externog faktora koje kompajler nije predviredio.
+Ukratko voltile garantuje da se izmene varijabli vide iz vise thred-ova. U mulit-thread okruzenjiva, svaki thread moze da kopira varijable iz glavne memorije u kes CPU za potrebe
+vise performanski. Ako racunar ima vise CPU, threadovi se mogu izvrsavati na razlicitim CPU. Dakle, svaki thread moze da ima svoju kopiju varijable u lokalnom kesu. Iz tog razloga se
+varijable kojima se pristupa iz vise threadova markiraju sa volatile, da bi forsirali upotrebu samo glavne memorili i isljucili optimizaciju kopiranjem u loalnu memoriju thread-a
+
+
+
+Pokazivaci u C-u : 
+
+Pointer je varijabla koja ima mogucnost da sacuva inicijalnu adresu objekta na koji pokazuje
+
+int main() {
+    int x = 10;  // Variable
+    int *ptr;    // Pointer declaration
+    
+    ptr = &x;     // Pointer initialization with the address of variable x
+    
+    // Alternatively, you can combine declaration and initialization:
+    int *ptr2 = &x;
+    
+    return 0;
+}
+
+int main() {
+    int x = 10;
+    int *ptr = &x;  // Pointer to the address of x
+    
+    // Accessing the value using the pointer
+    printf("Value of x: %d\n", *ptr);
+    
+    return 0;
+}
+
+int main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int *ptr = numbers;  // Pointer to the first element of the array
+    
+    // Pointer arithmetic to access array elements
+    for (int i = 0; i < 5; ++i) {
+        printf("%d ", *(ptr + i));
+    }
+    
+    return 0;
+}
+
+int main() {
+    int *dynamicArray = malloc(5 * sizeof(int));  // Allocating memory for an array
+    
+    // Accessing and modifying elements in the dynamically allocated array
+    dynamicArray[0] = 10;
+    dynamicArray[1] = 20;
+    
+    // Don't forget to free the allocated memory when done
+    free(dynamicArray);
+    
+    return 0;
+}
+
+#include <stdio.h>
+
+void printMessage(char *message) {
+    printf("Message: %s\n", message);
+}
+
+int main() {
+    void (*funcPtr)(char*);  // Declaration of a function pointer
+    
+    funcPtr = printMessage;  // Assigning the function's address to the pointer
+    
+    // Using the function pointer to call the function
+    funcPtr("Hello, pointers!");
+
+    return 0;
+}
+
+int main() {
+    int *ptr = NULL;  // Initializing a pointer to NULL
+    
+    // Check if the pointer is NULL before dereferencing
+    if (ptr != NULL) {
+        // Accessing the value using the pointer
+        printf("Value: %d\n", *ptr);
+    } else {
+        printf("Pointer is NULL.\n");
+    }
+    
+    return 0;
+}
+
+Rekurzivna funkcija -> definisanje problema uz pomoc samog problema
+
+#include <stdio.h>
+
+// Recursive function to calculate factorial
+int factorial(int n) {
+    // Base case: factorial of 0 is 1
+    if (n == 0) {
+        return 1;
+    }
+    // Recursive case: n! = n * (n-1)!
+    else {
+        return n * factorial(n - 1);
+    }
+}
+
+int main() {
+    int num = 5;
+    printf("Factorial of %d is %d\n", num, factorial(num));
+    return 0;
+}
+
+
+// Funkcija za setovanje odredjenog bita
+
+unsigned int setBit(unsigned int data, int position) {
+    // Create a bitmask with only the desired bit set to 1
+    unsigned int bitmask = 1 << position;
+    
+    // Set the bit at the specified position to 1 using bitwise OR
+    data |= bitmask;
+
+    return data;
+}
+
+
+// Funkcija za brisanje specificnog bita
+
+unsigned int clearBit(unsigned int data, int position) {
+    // Create a bitmask with only the desired bit set to 0
+    unsigned int bitmask = ~(1 << position);
+    
+    // Clear the bit at the specified position to 0 using bitwise AND
+    data &= bitmask;
+
+    return data;
+}
+
+
+// diference between malloc, realoc, calloc and free
+
+int* arr = (int*)malloc(5 * sizeof(int)); -> alocira blok memorije specificne velicine (kao rezultat vrati pokazivac na pocetak alocirane memorije; ako je greska vrati null; po default-u nije inicijalizovana, ima garbage values; parametri - size (broj bitova koje zelite da alocirate))
+int* arr = (int*)calloc(5, sizeof(int)); -> razlika u odnosu na malloc sto su po default-u sve vrednosti deklarisane sa 0; parametrin num -> number of elements, size -> velicina svakog elementa u bajtovima
+int* resizedArr = (int*)realloc(arr, 10 * sizeof(int)); -> razlika u odnosu na calloc je to sto ovo koristimo kada zelimo da izmenimo blok memorije koji vec postoji; parametri : ptr -> pointer na prethodni alocirani memorjski blok, size -> nova velicina memorijskog bloka; kao failure vraca null; rezultat vrati pointer na pocetak realocirane memorije
+
+
+Variable Arguments 
+#inlcude <stdarg.h> -> omogucava da se funkcije posalje proizvoljan broj argumenata (va_list -> variable argument lista; va_start -> macro da inicijalizuje va_listu. va_arg -> novi element va_liste, va_end -> macro na kraju va_liste)
+
+
+Error Handling 
+Funkcija moze da vrati specificnu vrednost koja moze da kaze da je nesto success ili failuere (npr moze da vrati NULL)
+Funkcija moze da vrati specificni error code return 0 // znaci da je uspesno zavrsena funkcija
+Funkcija u kojoj se otvara neki tekstualni fajl moze da baci perror() -> prikazuje string koja reprezentuje trenutnu errno vrednost
+Funkcija strerror() vraca pokazivac na tekstualnu reprezentaciju trenutne greske
+stderr -> filestream to output all string values
+exit (0) -> se koristi da terminira kod, zavisno da li je uspesno ili neuspesno
+
+
+Pretprocesorske direktive
+#define, #include, #pragma, #error, #endif, #elif, #else, #if, __DATE__, __TIME__, __FILE__, __LINE__
+#ifndef -> if not defined (defisanje nekog makroa ako nije pre toga definisan)
+#undef -> undefinise neko marko
+#pragma je pretprocesorska direktiva koja sluzi da da hint kompajleru, tacno ponasanje #pragma direktive zavisi od kompajelar
+#pragma once -> koristi se kao cuvar kako bi se utvrdilo da je header file inlcudovan samo jednom; moze da se koristi za mrtav kod
+
+
+Rad sa fajlovima : 
+
+FILE * fp
+
+fp = fopen(const char * filename, const char * mode);
+r (read), w (write), a (appending mode), r++ (reading and writing), w++(write and reade ako fajl ne postoji kreiraj novi), a++
+fopen(fp) -> vraca 0 ako je uspesna ili EOF ako je error
+fputs() vraca ne negativnu vrednost ako je uspesno ostalo vraca EOF
+fprintf(fp, "Text")
+fputs("Text", fp)
+
+fgetc (FILE *fp), fscanf(FILE *fp, const char *format)
+fgets("Tekst", (FILE*)fp)
+fscanf(fp, "%s", buff)
+
+
+I/O
+c = getchar() koristi se za citanje jednog karaktera
+putchar (c) koristi se sa pisanje jednog karaktera
+
+
+Typedef in C
+
+typedef struct Books {
+   char title[50];
+   char author[50];
+   char subject[100];
+   int book_id;
+} Book;
+ 
+int main( ) {
+
+   Book book;
+ 
+   strcpy( book.title, "C Programming");
+   strcpy( book.author, "Nuha Ali"); 
+   strcpy( book.subject, "C Programming Tutorial");
+   book.book_id = 6495407;
+ 
+   printf( "Book title : %s\n", book.title);
+   printf( "Book author : %s\n", book.author);
+   printf( "Book subject : %s\n", book.subject);
+   printf( "Book book_id : %d\n", book.book_id);
+
+   return 0;
+}
+
+u strukturama svaki element strukture se storuje u memoriju jedan do drugog
+
+struct Example {
+    char a;
+    int b;
+    float c;
+};
+
+ovakva struktura ima 9 bajtova
+
+Tipovi listi u C-u
+
+NIzovi (u memoriji se storuju jedan za drugim)
+Jednostruko spregnuta lista (Elementi nisu storovani jedan za drugim, ali svaki cvor ima pointer ka sledecem nodu a poslednji cvor pokazuje na NULL; cvorovi su dinamicki alocirani i lista moze da se uvecava i smanjuje)
+Dvostruko spregnuta lista (slicno kao jednostruko spregnuta samo cvorovi imaju pokazivac ka prethodnom i sledecem cvoru)
+Cirkularna (slicno kao jednostruka samo poslednji cvor u listi ima pokazivac ka prvom elemntu u listu)
+Stabla u C-u slicno kao jednostruka lista, samo sto imaju pokazivace ka cvoru levo od njih i desno od njih i ide hijarahjiski
+Sortiranje listi je veoma skupo
+Random acess nije dozvoljen u listma
+
+__fpurge(buffer) -> koristi se da obrise podatke iz variable koja je ucitala file 
